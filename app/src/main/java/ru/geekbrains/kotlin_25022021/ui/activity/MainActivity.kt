@@ -9,7 +9,7 @@ import ru.geekbrains.kotlin_25022021.databinding.ActivityMainBinding
 import ru.geekbrains.kotlin_25022021.mvp.presenter.MainPresenter
 import ru.geekbrains.kotlin_25022021.mvp.view.MainView
 import ru.geekbrains.kotlin_25022021.ui.App
-import ru.geekbrains.kotlin_25022021.ui.BackClickListener
+import ru.geekbrains.kotlin_25022021.ui.BackButtonListener
 import ru.geekbrains.kotlin_25022021.ui.adapter.UsersRVAdapter
 import ru.geekbrains.kotlin_25022021.ui.navigation.AndroidScreens
 
@@ -43,7 +43,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
-            if(it is BackClickListener && it.backPressed()){
+            if(it is BackButtonListener && it.backPressed()){
                 return
             }
         }

@@ -4,23 +4,24 @@ import com.github.terrakok.cicerone.Router
 import moxy.MvpPresenter
 import ru.geekbrains.kotlin_25022021.mvp.model.GithubUsersRepo
 import ru.geekbrains.kotlin_25022021.mvp.model.entity.GithubUser
-import ru.geekbrains.kotlin_25022021.mvp.presenter.list.IUsersListPresenter
+import ru.geekbrains.kotlin_25022021.mvp.navigation.IScreens
+import ru.geekbrains.kotlin_25022021.mvp.presenter.list.IUserListPresenter
 import ru.geekbrains.kotlin_25022021.mvp.view.UsersView
-import ru.geekbrains.kotlin_25022021.mvp.view.list.IUserItemView
+import ru.geekbrains.kotlin_25022021.mvp.view.list.UserItemView
 
-class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
+
+class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router, val screens: IScreens) :
     MvpPresenter<UsersView>() {
-
-    class UsersListPresenter : IUsersListPresenter {
+    class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
-        override var itemClickListener: ((IUserItemView) -> Unit)? = null
+        override var itemClickListener: ((UserItemView) -> Unit)? = null
 
-        override fun bindView(view: IUserItemView) {
+        override fun getCount() = users.size
+
+        override fun bindView(view: UserItemView) {
             val user = users[view.pos]
             view.setLogin(user.login)
         }
-
-        override fun getCount() = users.size
     }
 
     val usersListPresenter = UsersListPresenter()
@@ -30,21 +31,21 @@ class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
         viewState.init()
         loadData()
 
-        usersListPresenter.itemClickListener = { view ->
-            val user = usersListPresenter.users[view.pos]
-            //router.navigateTo(screens.user(user))
+        usersListPresenter.itemClickListener = { itemView ->
+            val user = usersListPresenter.users[itemView.pos]
+            router.navigateTo(screens.user(user))
         }
     }
 
     fun loadData() {
         val users = usersRepo.getUsers()
-        usersListPresenter.users.clear()
         usersListPresenter.users.addAll(users)
         viewState.updateList()
     }
 
-    fun backClick(): Boolean {
+    fun backPressed(): Boolean {
         router.exit()
         return true
     }
+
 }

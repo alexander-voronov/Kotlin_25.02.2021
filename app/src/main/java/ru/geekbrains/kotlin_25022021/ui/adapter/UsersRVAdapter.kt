@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.kotlin_25022021.databinding.ItemUserBinding
-import ru.geekbrains.kotlin_25022021.mvp.presenter.list.IUsersListPresenter
-import ru.geekbrains.kotlin_25022021.mvp.view.list.IUserItemView
+import ru.geekbrains.kotlin_25022021.mvp.presenter.list.IUserListPresenter
+import ru.geekbrains.kotlin_25022021.mvp.view.list.UserItemView
 
-class UsersRVAdapter(val presenter: IUsersListPresenter) :
+class UsersRVAdapter(val presenter: IUserListPresenter) :
     RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(
             ItemUserBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -27,12 +27,11 @@ class UsersRVAdapter(val presenter: IUsersListPresenter) :
         presenter.bindView(holder.apply { pos = position })
 
     inner class ViewHolder(val vb: ItemUserBinding) : RecyclerView.ViewHolder(vb.root),
-        IUserItemView {
+        UserItemView {
         override var pos = -1
 
         override fun setLogin(text: String) = with(vb) {
             tvLogin.text = text
         }
-
     }
 }

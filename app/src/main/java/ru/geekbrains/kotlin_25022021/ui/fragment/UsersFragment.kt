@@ -11,29 +11,34 @@ import ru.geekbrains.kotlin_25022021.mvp.model.GithubUsersRepo
 import ru.geekbrains.kotlin_25022021.mvp.presenter.UsersPresenter
 import ru.geekbrains.kotlin_25022021.mvp.view.UsersView
 import ru.geekbrains.kotlin_25022021.ui.App
-import ru.geekbrains.kotlin_25022021.ui.BackClickListener
+import ru.geekbrains.kotlin_25022021.ui.BackButtonListener
 import ru.geekbrains.kotlin_25022021.ui.adapter.UsersRVAdapter
+import ru.geekbrains.kotlin_25022021.ui.navigation.AndroidScreens
 
-class UsersFragment : MvpAppCompatFragment(), UsersView, BackClickListener {
-
+class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     companion object {
         fun newInstance() = UsersFragment()
     }
 
-    private val presenter by moxyPresenter {
-        UsersPresenter(GithubUsersRepo(), App.instance.router)
+    val presenter: UsersPresenter by moxyPresenter {
+        UsersPresenter(
+            GithubUsersRepo(),
+            App.instance.router,
+            AndroidScreens()
+        )
     }
+    var adapter: UsersRVAdapter? = null
 
     private var vb: FragmentUsersBinding? = null
-    private var adapter: UsersRVAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = FragmentUsersBinding.inflate(inflater, container, false).also {
-        vb = it
-    }.root
+    ) =
+        FragmentUsersBinding.inflate(inflater, container, false).also {
+            vb = it
+        }.root
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -41,7 +46,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackClickListener {
     }
 
     override fun init() {
-        vb?.rvUsers?.layoutManager = LinearLayoutManager(requireContext())
+        vb?.rvUsers?.layoutManager = LinearLayoutManager(context)
         adapter = UsersRVAdapter(presenter.usersListPresenter)
         vb?.rvUsers?.adapter = adapter
     }
@@ -50,6 +55,5 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackClickListener {
         adapter?.notifyDataSetChanged()
     }
 
-    override fun backPressed() = presenter.backClick()
-
+    override fun backPressed() = presenter.backPressed()
 }
